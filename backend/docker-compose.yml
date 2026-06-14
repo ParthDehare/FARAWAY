@@ -107,6 +107,45 @@ services:
       - .:/app
     command: python -m gateway.stream_worker
 
+  db-seeder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railnerv-db-seeder
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://railnerv:railnerv@postgres:5432/railnerv
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: python -m scripts.seed_indian_network
+    restart: "no"
+
+  simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railnerv-simulator
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://railnerv:railnerv@postgres:5432/railnerv
+      KAFKA_BROKER_URL: kafka:29092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      db-seeder:
+        condition: service_completed_successfully
+    volumes:
+      - .:/app
+    command: python -m scripts.enhanced_simulator
+    restart: unless-stopped
+
   web:
     build:
       context: ../frontend

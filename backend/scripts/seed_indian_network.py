@@ -93,6 +93,29 @@ async def seed():
                 segments.append(seg)
         session.add_all(segments)
         
+        print("Seeding Trains...")
+        trains = []
+        import random
+        for i, route in enumerate(ROUTES):
+            for j in range(5):
+                origin = route['name'].split("-")[0]
+                destination = route['name'].split("-")[1]
+                t = Train(
+                    id=uuid.uuid4(),
+                    number=str(12000 + i*100 + j),
+                    name=f"{origin}-{destination} Express {j+1}",
+                    origin=origin,
+                    destination=destination,
+                    latitude=route['start'][0] + random.uniform(-0.5, 0.5),
+                    longitude=route['start'][1] + random.uniform(-0.5, 0.5),
+                    speed_kmh=random.uniform(70, 130),
+                    status="running",
+                    passenger_count=random.randint(400, 1200),
+                    delay_minutes=0
+                )
+                trains.append(t)
+        session.add_all(trains)
+        
         print("Seeding Drones...")
         drones = [
             Drone(call_sign="UAV-MUM-1", status="patrolling", battery_pct=94.5, speed_kmh=120.0, latitude=MUMBAI[0], longitude=MUMBAI[1]),
