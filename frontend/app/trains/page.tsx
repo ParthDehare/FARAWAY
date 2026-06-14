@@ -186,7 +186,7 @@ export default function TrainFleetPage() {
             </thead>
             <tbody>
               {filteredTrains.map((train, i) => {
-                const sc = statusConfig[train.status];
+                const sc = statusConfig[train.status?.toLowerCase()] || statusConfig["warning"];
                 return (
                   <React.Fragment key={train.number}>
                   <motion.tr
