@@ -116,5 +116,5 @@ For enterprise-grade deployment:
 This project was developed for the Indian Railways Hackathon. All rights reserved.
 
 <div align="center">
-  <p>Built with ❤️ for Indian Railways</p>
+  <p>Built for Railways</p>
 </div>
