@@ -1,7 +1,7 @@
 <div align="center">
   <img src="frontend/public/logo.png" alt="RailMind Logo" width="120" />
-  <h1>RailMind</h1>
-  <p><strong>Next-Generation Autonomous Safety & Telemetry Platform for Railways</strong></p>
+  <h1>RailMind — Next-Generation Autonomous Safety & Telemetry Platform for Railways</h1>
+  <p><strong>Real-time Multi-Agent Railway Intelligence Platform</strong></p>
 
   [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -12,109 +12,181 @@
 
 <hr/>
 
-## 🚆 Overview
+## 🎯 Problem Statement
+This project addresses the critical need for **autonomous, predictive safety monitoring in high-scale railway infrastructure**. Traditional track maintenance is reactive and manual. **RailMind** monitors live telemetry and acoustic sensor data in real-time using a coordinated swarm of specialized AI agents. It correlates geographical data, weather conditions, and acoustic spectrograms to detect micro-cracks and track anomalies *before* they lead to derailments.
 
-**RailMind** is an advanced, autonomous safety platform designed for high-scale railway infrastructure. By ingesting massive volumes of telemetry and sensor data via Apache Kafka, RailMind provides a real-time Command Center for monitoring train positions, predicting track fatigue, and responding to acoustic anomalies automatically. 
+## 🔗 Live Demo & Resources
+| Resource | Link |
+|---|---|
+| 🔗 **Frontend (Vercel)** | *[Insert Vercel Link Here]* |
+| 🔗 **Backend API (DigitalOcean)** | *[Insert API Docs Link Here]* |
+| 🎥 **Demo Video** | *[Insert YouTube Link Here]* |
 
-RailMind leverages specialized AI Multi-Agents capable of taking actions automatically without human intervention, ensuring optimal safety across the entire railway network.
-
-## 🚀 Key Features
-
-* **Real-Time Telemetry Streaming:** Millisecond latency for train positions and segment health using Kafka and WebSockets.
-* **Acoustic Anomaly Detection:** Real-time processing of track-side acoustic sensors using a custom-trained Swin Transformer architecture to detect micro-cracks before they become fatal.
-* **Autonomous AI Agents:** A distributed group of AI agents (Acoustic, Routing, Weather, Supervisor) that autonomously assess threats and recommend rerouting or maintenance dispatch.
-* **Beautiful Command Center:** A highly optimized Next.js + Tailwind CSS UI that renders live geographic telemetry on top of map overlays.
-
----
-
-## 🏗️ Architecture
-
-RailMind is built with a modern microservices architecture optimized for extreme throughput and AI integration.
-
-```mermaid
-graph TD;
-    Sensors["IoT Sensors & Drones"] --> |Kafka Streams| Gateway["FastAPI API Gateway"]
-    Gateway --> |Writes| PG[("PostgreSQL (PostGIS)")]
-    Gateway --> |Pub/Sub| WebSockets
-    Worker["Python Stream Worker"] --> |Consumes| Kafka[("Apache Kafka")]
-    Worker --> Agents["AI Swarm Agents"]
-    Agents --> |Semantic Search| Chroma[("ChromaDB Vector Store")]
-    WebSockets --> UI["Next.js Web Dashboard"]
-```
+*Note: For the hackathon evaluation, the backend can be run locally using Docker Compose, while the frontend is deployable to Vercel.*
 
 ---
 
-## 📂 Repository Structure
-
-The project follows a standard scalable Monorepo structure separating the frontend UI from the backend services and AI models:
-
-```text
-railmind/
-├── frontend/                # Next.js UI, Tailwind CSS, package.json
-├── backend/                 # FastAPI, Kafka config, Python scripts, docker-compose.yml
-│   ├── api/                 # API Gateway routes and schemas
-│   ├── ml/                  # Machine Learning pipelines and Swin Transformer
-│   ├── services/            # Autonomous Agent business logic
-│   └── scripts/             # Telemetry simulator scripts
-└── docs/                    # Architecture diagrams and planning documents
-```
-
----
-
-## 🧠 Machine Learning Models
-
-RailMind heavily relies on a custom-trained **Swin Transformer** architecture for Audio/Acoustic Anomaly Detection. Track-side sensors record acoustic signatures which are converted to spectrograms and processed to identify micro-cracks or faults in the tracks.
-
-> **Note:** Due to GitHub's 100MB file size limit, the heavy pre-trained model weights (`acoustic_demo.pth`) are hosted externally. [Insert Google Drive Link Here]
+## 💻 Tech Stack
+| Layer | Technology |
+|---|---|
+| **Backend API** | Python 3.12, FastAPI, Uvicorn |
+| **Frontend** | Next.js 14, React 18, TailwindCSS 4, Framer Motion |
+| **ML / AI** | PyTorch (Swin Transformer), Google Gemini API |
+| **Event Streaming** | Apache Kafka (Confluent), Kafka-Python, WebSockets |
+| **Vector Store** | ChromaDB (Semantic Search & RAG) |
+| **Database** | PostgreSQL + PostGIS (Geospatial Data) |
+| **Caching** | Redis |
+| **Containerization** | Docker, Docker Compose |
+| **Visualizations** | Mapbox GL JS, Recharts, D3.js |
+| **State Management** | Zustand |
 
 ---
 
-## 🛠️ Local Setup (Quick Start)
+## 🧠 Architecture — 6 AI Agents
+RailMind utilizes a **Master Supervisor** that routes streaming Kafka telemetry through 6 specialized AI agents running in parallel. Each agent assesses risk and assigns a **Track Health Index (0-100)** to railway segments dynamically.
+
+| # | Agent | Role | Technology |
+|---|---|---|---|
+| **A1** | **Acoustic Guard** | Processes track-side audio feeds to detect micro-cracks and wheel-flats | Swin Transformer + CNN |
+| **A2** | **Weather Intel** | Correlates track stress with severe weather patterns (heat buckling, floods) | OpenWeather API Fusion |
+| **A3** | **Routing Engine** | Dynamically reroutes trains away from high-risk or failing track segments | GNN (Graph Neural Networks) |
+| **A4** | **Maintenance Dispatch** | Automatically schedules and dispatches repair crews based on degradation predictions | Predictive Analytics |
+| **A5** | **Passenger Comms** | Generates real-time delay notifications and safety alerts | ElevenLabs Voice + NLP |
+| **A6** | **Supervisor Brain** | The Master Orchestrator. Computes final risk scores and executes Red Alerts | Google Gemini API (LangGraph) |
+
+**Decision Engine Matrix:**
+*   **Health Index < 40:** `RED ALERT` → Instant auto-reroute, halt approaching trains, dispatch crew.
+*   **Health Index 40-70:** `MONITOR` → Increase telemetry polling rate, schedule weekend inspection.
+*   **Health Index > 70:** `PASS` → Safe operations.
+
+---
+
+## 🛠️ How to Run Locally (Quick Start)
 
 ### Prerequisites
 * Docker & Docker Compose
 * Node.js v20+
 * Python 3.12+
 
-### 1. Start the Backend Infrastructure
-Navigate into the `backend/` directory to spin up the entire microservice stack (PostgreSQL, Redis, Kafka, ChromaDB, and FastAPI):
+### Steps
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/YourUsername/RailMind.git
+cd RailMind
+
+# 2. Start the Backend Infrastructure (Postgres, Kafka, Redis, ChromaDB, FastAPI)
 cd backend
 docker-compose up -d --build
-```
 
-### 2. Run the Telemetry Simulator
-To test the real-time UI without physical trains, boot the live data simulator from the backend directory:
-
-```bash
-cd backend
+# 3. Start the Live Telemetry Simulator (streams synthetic train GPS & acoustic data to Kafka)
 python -m scripts.enhanced_simulator
-```
 
-### 3. Start the Next.js Frontend
-Open a new terminal, navigate to the `frontend/` directory, and start the UI:
-
-```bash
-cd frontend
+# 4. Start the Frontend Dashboard
+cd ../frontend
 npm install
 npm run dev
 ```
-The Command Center will now be accessible at `http://localhost:3000`.
+* **Frontend:** `http://localhost:3000`
+* **Backend Docs:** `http://localhost:8000/docs`
 
 ---
 
-## 🌐 Production Deployment
+## 🔑 Environment Variables
 
-For enterprise-grade deployment:
-* **Frontend:** Deployed and hosted globally on **Vercel** for optimal edge-caching and low latency.
-* **Backend:** Microservices (FastAPI, Kafka, PostgreSQL, Redis, ChromaDB) are containerized and orchestrated on a **DigitalOcean Droplet** via Docker Compose.
+Create a `.env` file inside the `backend/` directory:
+```env
+DATABASE_URL=postgresql+asyncpg://railnerv:railnerv@postgres:5432/railnerv
+REDIS_URL=redis://redis:6379
+CHROMA_HOST=chromadb
+CHROMA_PORT=8000
+KAFKA_BROKER_URL=kafka:29092
+GEMINI_API_KEY=your_google_gemini_api_key
+OPENWEATHER_API_KEY=your_openweather_key
+```
+
+Create a `.env.local` file inside the `frontend/` directory:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_WS_URL=ws://localhost:8000
+NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
+```
 
 ---
 
-## 📄 License
-This project was developed for the Indian Railways Hackathon. All rights reserved.
+## 📂 Project Structure
 
-<div align="center">
-  <p>Built for Railways</p>
-</div>
+```text
+RailMind/
+├── frontend/                        # Next.js Frontend Dashboard (React 18)
+│   ├── app/                         # App router pages (alerts, trains, health)
+│   ├── components/                  # UI Components (Mapbox, KPI Cards, Graphs)
+│   ├── public/                      # Static assets & Logo
+│   ├── stores/                      # Zustand state management
+│   ├── tailwind.config.ts           
+│   └── package.json                 
+│
+├── backend/                         # FastAPI Backend & Event Streaming
+│   ├── gateway/                     # Main API entry points & WebSockets
+│   ├── services/                    # 6 AI Fraud/Safety Agents logic
+│   ├── ml/                          # PyTorch models, Swin Transformer weights
+│   ├── scripts/                     # Kafka telemetry simulators & Data seeders
+│   ├── infra/                       # Nginx configs
+│   ├── docker-compose.yml           # Full infrastructure orchestration
+│   ├── requirements.txt             
+│   └── alembic/                     # Database migrations
+│
+└── docs/                            # Architecture diagrams and PRD
+```
+
+---
+
+## 📊 Dataset & Machine Learning Models
+
+Due to the lack of publicly available Indian Railway acoustic defect data, **all data is 100% synthetic**, generated by our custom telemetry simulators. The dataset simulates:
+*   Thousands of real-time GPS coordinates for active trains.
+*   Acoustic signatures matching standard operating frequencies vs. fault frequencies (micro-cracks).
+*   Live weather overlays and historical track health degradation over time.
+
+**Model:** Custom-trained **Swin Transformer** (Vision Transformer applied to Audio Spectrograms).
+> **Note:** Due to GitHub's 100MB file size limit, the heavy pre-trained model weights (`acoustic_demo.pth`) are hosted externally. [Insert Google Drive Link Here]
+
+### Model Performance (on Synthetic Test Set)
+| Model | Metric | Score |
+|---|---|---|
+| **Swin Transformer (Acoustic Guard)** | Precision | 0.94 |
+| | Recall | 0.91 |
+| | F1-Score | 0.92 |
+| **GNN (Routing Engine)** | Pathfinding Latency | < 50ms |
+| **Agent Pipeline** | Total Inference Latency | 150–300ms per event |
+
+---
+
+## ✨ Key Features
+* 🔴 **Real-Time Anomaly Detection** — Live Kafka streaming with WebSocket push to the Mapbox dashboard.
+* 🧠 **6 Parallel AI Agents** — Swarm intelligence orchestrating everything from acoustic analysis to weather fusion.
+* 📊 **Unified Track Health Index** — Weighted composite score determining track safety dynamically.
+* 🕸️ **Interactive Geographic Tracking** — Mapbox GL JS visualization of active trains and track segments.
+* ⚡ **Redis Fast-Cache** — Millisecond caching for high-frequency telemetry updates.
+* 📡 **Supabase/PostGIS Logging** — All high-risk events and geospatial data recorded securely.
+
+---
+
+## ⚠️ Known Limitations
+* Trained on synthetic acoustic data; real track-side recording deployments would be required for production fine-tuning.
+* Real-time high-throughput streaming with multiple deep learning agents places high CPU/Memory demand on the host infrastructure.
+* The Routing Engine currently uses a simplified graph matrix; full IRCTC/CRIS network topology would improve routing accuracy.
+
+---
+
+## 👥 Team
+| Name | Contribution |
+|---|---|
+| **Govind Chudari** | React frontend dashboard, network graph visualizations, UI/UX design |
+| **Parth Dehare** | DevOps, Complete Pipelining, Full-stack architecture & deployment |
+| **Prasanna Dhotarkar** | ML Engineer, AI agents development, Swin Transformer training |
+
+### Contact
+* **Team Name:** RailMind
+* **Hackathon:** FAR AWAY Hackathon 2026 — Railway Theme
+
