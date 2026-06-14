@@ -5,7 +5,7 @@
 
   [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
-  [![Kafka](https://img.shields.io/badge/Apache_Kafka-3.8-231F20?logo=apachekafka)](https://kafka.apache.org/)
+  [![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-3.8-231F20?logo=apachekafka)](https://kafka.apache.org/)
   [![PostgreSQL](https://img.shields.io/badge/PostGIS-16-336791?logo=postgresql)](https://postgis.net/)
   [![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)](https://redis.io/)
 </div>
@@ -46,51 +46,69 @@ graph TD;
 
 ## 📂 Repository Structure
 
-The project follows a standard scalable Monorepo structure:
+The project follows a standard scalable Monorepo structure separating the frontend UI from the backend services and AI models:
 
 ```text
 railmind/
-├── apps/
-│   ├── api/                 # FastAPI Backend & Kafka Workers
-│   └── web/                 # Next.js Frontend Dashboard
-├── infra/                   # Docker-compose configuration
-├── ml/                      # Machine Learning pipelines
-│   ├── data/                # Acoustic training datasets
-│   ├── models/              # Pre-trained weights (.pth)
-│   └── swin_transformer/    # Model architectures
-└── packages/                # Shared utilities
+├── frontend/                # Next.js UI, Tailwind CSS, package.json
+├── backend/                 # FastAPI, Kafka config, Python scripts, docker-compose.yml
+│   ├── api/                 # API Gateway routes and schemas
+│   ├── ml/                  # Machine Learning pipelines and Swin Transformer
+│   ├── services/            # Autonomous Agent business logic
+│   └── scripts/             # Telemetry simulator scripts
+└── docs/                    # Architecture diagrams and planning documents
 ```
 
 ---
 
-## 🛠️ Quick Start
+## 🧠 Machine Learning Models
+
+RailMind heavily relies on a custom-trained **Swin Transformer** architecture for Audio/Acoustic Anomaly Detection. Track-side sensors record acoustic signatures which are converted to spectrograms and processed to identify micro-cracks or faults in the tracks.
+
+> **Note:** Due to GitHub's 100MB file size limit, the heavy pre-trained model weights (`acoustic_demo.pth`) are hosted externally. [Insert Google Drive Link Here]
+
+---
+
+## 🛠️ Local Setup (Quick Start)
 
 ### Prerequisites
 * Docker & Docker Compose
 * Node.js v20+
+* Python 3.12+
 
-### Deployment
-To spin up the entire microservice stack locally (Postgres, Redis, Kafka, ChromaDB, API, and Background Worker):
+### 1. Start the Backend Infrastructure
+Navigate into the `backend/` directory to spin up the entire microservice stack (PostgreSQL, Redis, Kafka, ChromaDB, and FastAPI):
 
 ```bash
-cd infra
+cd backend
 docker-compose up -d --build
 ```
 
-### Start the Next.js Frontend
+### 2. Run the Telemetry Simulator
+To test the real-time UI without physical trains, boot the live data simulator from the backend directory:
 
 ```bash
+cd backend
+python -m scripts.enhanced_simulator
+```
+
+### 3. Start the Next.js Frontend
+Open a new terminal, navigate to the `frontend/` directory, and start the UI:
+
+```bash
+cd frontend
 npm install
 npm run dev
 ```
 The Command Center will now be accessible at `http://localhost:3000`.
 
-### Run the Telemetry Simulator
-To test the real-time UI without physical trains, you can boot the live data simulator:
-```bash
-cd apps/api
-python -m scripts.enhanced_simulator
-```
+---
+
+## 🌐 Production Deployment
+
+For enterprise-grade deployment:
+* **Frontend:** Deployed and hosted globally on **Vercel** for optimal edge-caching and low latency.
+* **Backend:** Microservices (FastAPI, Kafka, PostgreSQL, Redis, ChromaDB) are containerized and orchestrated on a **DigitalOcean Droplet** via Docker Compose.
 
 ---
 
