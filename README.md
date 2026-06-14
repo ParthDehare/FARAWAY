@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/en/4/45/Indian_Railways_logo.svg" alt="Indian Railways Logo" width="120" />
+  <img src="frontend/public/logo.png" alt="RailMind Logo" width="120" />
   <h1>RailMind</h1>
-  <p><strong>Next-Generation Autonomous Safety & Telemetry Platform for Indian Railways</strong></p>
+  <p><strong>Next-Generation Autonomous Safety & Telemetry Platform for Railways</strong></p>
 
   [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
