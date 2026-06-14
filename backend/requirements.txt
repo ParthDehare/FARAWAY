@@ -1,0 +1,92 @@
+# Web Framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.9
+httpx==0.27.0
+aiokafka==0.12.0
+
+# WebSocket & Real-time
+python-socketio==5.11.0
+redis==5.0.7
+aioredis==2.0.1
+
+# Database
+sqlalchemy[asyncio]==2.0.31
+asyncpg==0.29.0
+alembic==1.13.2
+psycopg2-binary==2.9.9
+
+# Data Validation
+pydantic==2.8.0
+pydantic-settings==2.3.0
+email-validator==2.2.0
+
+# Background Tasks
+celery==5.4.0
+flower==2.0.1
+
+# AI / ML Core
+anthropic==0.32.0
+langchain==0.2.11
+langchain-anthropic==0.1.20
+langchain-community==0.2.10
+langgraph==0.2.0
+
+# Vector Memory
+chromadb==0.5.5
+sentence-transformers==3.0.1
+
+# Deep Learning - Acoustic
+torch==2.3.1
+torchaudio==2.3.1
+transformers==4.43.0
+timm==1.0.8
+librosa==0.10.2
+soundfile==0.12.1
+numpy==1.26.4
+scipy==1.14.0
+
+# Deep Learning - GNN
+torch-geometric==2.5.3
+
+# ML Utilities
+scikit-learn==1.5.1
+pandas==2.2.2
+matplotlib==3.9.1
+
+# Weather & External APIs
+requests==2.32.3
+requests-cache==1.2.1
+
+# Report Generation
+reportlab==4.2.2
+python-docx==1.1.2
+jinja2==3.1.4
+
+# NLP for Social Media Radar
+spacy==3.7.5
+langdetect==1.0.9
+tweepy==4.14.0
+
+# Geospatial
+shapely==2.0.5
+pyproj==3.6.1
+
+# Utilities
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.1
+loguru==0.7.2
+tenacity==8.5.0
+aiofiles==23.2.1
+orjson==3.10.6
+
+# Monitoring
+sentry-sdk[fastapi]==2.11.0
+prometheus-fastapi-instrumentator==7.0.0
+
+# Testing
+pytest==8.3.1
+pytest-asyncio==0.23.8
+pytest-cov==5.0.0
+factory-boy==3.3.1

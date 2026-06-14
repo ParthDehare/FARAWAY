@@ -1,0 +1,31 @@
+# Deep Learning
+torch==2.3.1
+torchaudio==2.3.1
+torchvision==0.18.1
+transformers==4.43.0
+timm==1.0.8
+
+# GNN
+torch-geometric==2.5.3
+
+# Audio Processing
+librosa==0.10.2
+soundfile==0.12.1
+
+# Data
+numpy==1.26.4
+pandas==2.2.2
+scipy==1.14.0
+scikit-learn==1.5.1
+h5py==3.11.0
+
+# Visualization
+matplotlib==3.9.1
+seaborn==0.13.2
+
+# Experiment Tracking
+tensorboard==2.17.0
+
+# Utilities
+tqdm==4.66.4
+python-dotenv==1.0.1

@@ -1,0 +1,10 @@
+class EventTypes:
+    HEARTBEAT = "heartbeat"
+    TRAIN_POSITION = "train:position"
+    AGENT_DECISION = "agent:decision"
+    ALERT_NEW = "alert:new"
+    TRACK_HEALTH = "track:health-update"
+    WEATHER_UPDATE = "weather:update"
+    REROUTE_ISSUED = "reroute:issued"
+    AUDIT_ENTRY = "audit:entry"
+    ANOMALY_DETECTED = "anomaly:detected"

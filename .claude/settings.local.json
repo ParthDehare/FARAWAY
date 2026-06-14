@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/h/CODE/FAR AWAY/**)",
+      "Bash(python3 -c \":*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3:*)",
+      "Bash(python3.11 -c \"\nimport sys\nsys.stdout.reconfigure\\(encoding='utf-8'\\)\nfrom docx import Document\ndoc = Document\\('H:/CODE/FAR AWAY/PLAN/RailNerv_Sentinel_PRD.docx'\\)\nfull_text = []\nfor para in doc.paragraphs:\n    if para.text.strip\\(\\):\n        full_text.append\\(para.text\\)\nfor table in doc.tables:\n    for row in table.rows:\n        for cell in row.cells:\n            if cell.text.strip\\(\\):\n                full_text.append\\('[TABLE] ' + cell.text.strip\\(\\)\\)\nprint\\('\\\\n'.join\\(full_text\\)\\)\n\" 2>&1)",
+      "Bash(pip --version)",
+      "Bash(pip3 --version)",
+      "Bash(cd:*)",
+      "Bash(npm install:*)",
+      "Bash(pip install:*)",
+      "Bash(npx next:*)",
+      "Bash(ls:*)",
+      "Bash(find \"H:\\\\CODE\\\\FAR AWAY\\\\PROJECT\\\\apps\\\\web\\\\components\" -name \"*.tsx\" -exec wc -l {})",
+      "Bash(wc:*)",
+      "Bash(find \"H:\\\\CODE\\\\FAR AWAY\\\\PROJECT\" -type f \\\\\\( -name \"*.py\" -o -name \"*.ts\" -o -name \"*.tsx\" -o -name \"*.md\" \\\\\\) ! -path \"*/node_modules/*\" ! -path \"*/.next/*\" -exec wc -l {} +)",
+      "Bash(find \"H:\\\\CODE\\\\FAR AWAY\\\\PROJECT\\\\apps\\\\web\\\\app\" -name \"page.tsx\" -exec wc -l {})",
+      "Bash(find \"H:\\\\CODE\\\\FAR AWAY\\\\PROJECT\\\\apps\\\\web\\\\components\\\\layout\" -name \"*.tsx\" -exec wc -l {})",
+      "Bash(find 'H:/CODE/FAR AWAY/PROJECT/apps/api' -type f -name *.py)",
+      "Bash(find 'H:/CODE/FAR AWAY/PROJECT/apps/api/gateway' -type f -name *.py)",
+      "Bash(grep -E '\\\\.\\(py|txt\\)$')",
+      "Bash(find . -path */ml/* -type f)",
+      "Bash(npx tsc:*)",
+      "Bash(find 'H:\\\\CODE\\\\FAR AWAY\\\\PROJECT' -type f \\\\\\(-name *.pdf -o -name *jspdf* -o -name *export* -o -name *report* \\\\\\))",
+      "Bash(grep -r \"PWA\\\\|pwa\\\\|service-worker\\\\|service_worker\\\\|jspdf\\\\|pdfkit\\\\|docx\" 'H:\\\\CODE\\\\FAR AWAY\\\\PROJECT/apps' --include=*.ts --include=*.tsx --include=*.py)",
+      "Bash(find 'H:\\\\CODE\\\\FAR AWAY\\\\PROJECT\\\\apps\\\\api\\\\services' -name *.py -empty)",
+      "WebFetch(domain:tiles.openfreemap.org)",
+      "Bash(pip show:*)",
+      "Bash(grep -r \"toast\\\\|Toaster\\\\|notification\" 'H:/CODE/FAR AWAY/PROJECT/apps/web/app' --include=*.tsx --include=*.ts)"
+    ]
+  }
+}

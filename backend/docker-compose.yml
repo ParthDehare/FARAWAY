@@ -1,0 +1,131 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: railnerv-postgres
+    environment:
+      POSTGRES_DB: railnerv
+      POSTGRES_USER: railnerv
+      POSTGRES_PASSWORD: railnerv
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U railnerv"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: railnerv-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chromadb:
+    image: chromadb/chroma:0.5.5
+    container_name: railnerv-chromadb
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      ANONYMIZED_TELEMETRY: "false"
+
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: railnerv-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railnerv-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://railnerv:railnerv@postgres:5432/railnerv
+      REDIS_URL: redis://redis:6379
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: 8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+    volumes:
+      - .:/app
+    command: uvicorn gateway.main:socket_app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: railnerv-worker
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://railnerv:railnerv@postgres:5432/railnerv
+      REDIS_URL: redis://redis:6379
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: 8000
+      KAFKA_BROKER_URL: kafka:29092
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
+    command: python -m gateway.stream_worker
+
+  web:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: railnerv-web
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../frontend/.env.local
+    depends_on:
+      - api
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:
+  kafka_data:
